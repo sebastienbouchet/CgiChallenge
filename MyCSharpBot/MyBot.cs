@@ -8,6 +8,7 @@ namespace DTStrike.MyBot
 {
     public class Program
     {
+    	
         // The DoTurn function is where your code goes. The Game object
 	    // contains the state of the game, including information about all planets
 	    // and fleets that currently exist. Inside this function, you issue orders
@@ -17,15 +18,10 @@ namespace DTStrike.MyBot
 	    // There is already a basic strategy in place here. You can use it as a
 	    // starting point, or you can throw it out entirely and replace it with
 	    // your own.
-
 	    public static void doTurn(Game game) {
-		    // (1) If we currently have a fleet in flight, just do nothing.
-            if (game.getMyMilitaryFleets().Count() >= 10)
-            {
-			    return;
-		    }
-		    // (2) Find my strongest military planet.
-		    Planet source = null;
+	
+		    // (1) Choix de la source : la plus forte
+		    /*Planet source = null;
 		    int sourceShips = int.MinValue;
 		    foreach (Planet p in game.getMyMilitaryPlanets()) {
 			    int score = p.numShips;
@@ -38,51 +34,53 @@ namespace DTStrike.MyBot
             if (source == null)
             {
                 return;
-            }
+            }*/
 
-		    // (3) Find the weakest enemy or neutral planet.
+		    //	2	Choix de la cible : la plus faible et la plus proche de la source
+			//	2.1	Soit indus soit mili
 		    Planet dest = null;
-		    int destDist = int.MaxValue;
-            int numOtherShips = int.MaxValue;
-		    foreach (Planet p in game.getNotMyPlanets()) {
-
-                if ((p.numShips < numOtherShips) && (!(p is MilitaryPlanet)))
-                {
-                    dest = p;
-                    numOtherShips = p.numShips;
-                }
+		    Planet source = null;
+		    double destScore = 0;
+		    int destFleetShips = 0;
+		    List<Planet> cibles = game.getNotMyIndusPlanets();
+		    if ((cibles.Count == 0) || (game.getMyIndusPlanets().Count / game.getMyMilitaryPlanets().Count > 5)) {
+		    	cibles = game.getNotMyMiliPlanets();
+		    }
+		    foreach (Planet p in cibles)
+		    {
+		    	foreach (Planet s in game.getMyMilitaryPlanets()) {
+		    		int fleetShips = game.getShipsWithFleet(p) + 1;
+		    		
+		    		// taille mini de la flotte
+			    	if(fleetShips < 10) {
+			    		fleetShips = 10;
+			    	}
+		    		
+		    		if ((fleetShips < s.numShips / 2) && (s.numShips - fleetShips > 10)) {
+		    			
+			    		double score = game.getDestScore(p,s);
+			    		if(score > destScore) {
+		                	dest = p;
+		                	destScore = score;
+		                	destFleetShips = fleetShips;
+		                	source = s;
+			    		}
+			    		
+		    		}
+		    	}
 		    }
 
-            
-            if (dest == null)
-            {
-                foreach (Planet p in game.getNotMyPlanets())
-                {
-                    int dist = game.distance(source.id, p.id);
-                    if (dist < destDist)
-                    {
-                        destDist = dist;
-                        dest = p;
-                        numOtherShips = p.numShips;
-                    }
-                }
-            }
             
             //Log.debug("dest: " + dest.id.ToString() + " source  " + source.id.ToString());
 
-		    // (4) Send half the ships from my strongest planet to the weakest
-		    // planet that I do not own.
+		    //	3	On envoie les fleet
 		    if (source != null && dest != null) {
-                int numShips = numOtherShips + 1;
-                if ((numShips < source.numShips / 2) && (source.numShips - numShips > 10))
-                {
-                    game.issueOrder(source, dest, numShips);
-                }
-                else
-                {
-                    return;
-                }
-		    }
+                game.issueOrder(source, dest, destFleetShips);
+            }
+            else
+            {
+                return;
+            }
 	    }
 
 	    public static void Main(String[] args) {

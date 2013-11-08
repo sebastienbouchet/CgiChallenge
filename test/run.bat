@@ -45,7 +45,8 @@ if errorlevel 1 (
 )
 
 REM Define other bots
-set bot1="java -cp engine.jar six.challenge.bot.BullyBot"
+REM set bot1="java -cp engine.jar six.challenge.bot.BullyBot"
+set bot1="../oldBot/MyCSharpBot_v1.exe"
 set bot2="java -cp engine.jar six.challenge.bot.LooterBot"
 set bot3="java -cp engine.jar six.challenge.bot.RageBot"
 set bot4="java -cp engine.jar six.challenge.bot.RandomBot"

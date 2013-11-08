@@ -21,6 +21,26 @@ namespace DTStrike.MyBot
                 System.Console.Error.WriteLine("erreur parse...");
 		    }
 	    }
+        
+        public double getDestScore(Planet d, Planet s) {
+        	//Log.debug("ships=" + d.numShips + " distance=" + distance(s.id, d.id) + " score=" + (1.0/d.numShips + 1.0/distance(s.id, d.id)));
+        	return 1.0/getShipsWithFleet(d)*10.0 + 1.0/distance(s.id, d.id)/5.0;
+    	}
+        
+        public int getShipsWithFleet(Planet p) {
+        	int ships = p.numShips == 0 ? 1 : p.numShips;
+        	
+        	foreach (Fleet f in getFleets()) {
+        		if(f.destinationPlanet == p.id) {
+        			if(f.owner == p.owner) {
+        				ships += f.numShips;
+        			} else {
+        				ships -= f.numShips;
+        			}
+        		}
+        	}
+        	return ships;
+    	}
 
 	    /**
 	     * A player is alive if he owns at least one military planet or one fleet.
@@ -93,6 +113,16 @@ namespace DTStrike.MyBot
 		    }
 		    return r;
 	    }
+	    
+	    public List<Planet> getMyIndusPlanets() {
+		    List<Planet> r = new List<Planet>();
+		    foreach (Planet p in planets) {
+		    	if (p.owner == MY_ID && (!(p is MilitaryPlanet))) {
+				    r.Add(p);
+			    }
+		    }
+		    return r;
+	    }
 
 	    // Return a list of all neutral planets.
 	    public List<Planet> getNeutralPlanets() {
@@ -128,6 +158,27 @@ namespace DTStrike.MyBot
 		    }
 		    return r;
 	    }
+	    
+	    public List<Planet> getNotMyIndusPlanets() {
+		    List<Planet> r = new List<Planet>();
+		    foreach (Planet p in planets) {
+		    	if ((p.owner != MY_ID) && (!(p is MilitaryPlanet))) {
+				    r.Add(p);
+			    }
+		    }
+		    return r;
+	    }
+	    
+	     public List<Planet> getNotMyMiliPlanets() {
+		    List<Planet> r = new List<Planet>();
+		    foreach (Planet p in planets) {
+		    	if ((p.owner != MY_ID) && (p is MilitaryPlanet)) {
+				    r.Add(p);
+			    }
+		    }
+		    return r;
+	    }
+	    
 
 	    // Return a list of all the fleets.
 	    public List<Fleet> getFleets() {
