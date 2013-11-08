@@ -53,6 +53,7 @@ namespace DTStrike.MyBot
                 }
 		    }
 
+            
             if (dest == null)
             {
                 foreach (Planet p in game.getNotMyPlanets())
@@ -62,10 +63,12 @@ namespace DTStrike.MyBot
                     {
                         destDist = dist;
                         dest = p;
+                        numOtherShips = p.numShips;
                     }
                 }
-
             }
+            
+            //Log.debug("dest: " + dest.id.ToString() + " source  " + source.id.ToString());
 
 		    // (4) Send half the ships from my strongest planet to the weakest
 		    // planet that I do not own.

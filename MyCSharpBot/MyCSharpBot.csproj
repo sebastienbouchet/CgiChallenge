@@ -46,6 +46,7 @@
     <Compile Include="EconomicPlanet.cs" />
     <Compile Include="Fleet.cs" />
     <Compile Include="Game.cs" />
+    <Compile Include="Log.cs" />
     <Compile Include="MilitaryPlanet.cs" />
     <Compile Include="MyBot.cs" />
     <Compile Include="Planet.cs" />
