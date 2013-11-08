@@ -24,7 +24,8 @@ namespace DTStrike.MyBot
         
         public double getDestScore(Planet d, Planet s) {
         	//Log.debug("ships=" + d.numShips + " distance=" + distance(s.id, d.id) + " score=" + (1.0/d.numShips + 1.0/distance(s.id, d.id)));
-        	return 1.0/getShipsWithFleet(d)*10.0 + 1.0/distance(s.id, d.id)/5.0;
+        	//return 1.0/getShipsWithFleet(d)*10.0 + 1.0/distance(s.id, d.id)/2.0;
+        	return 1.0/(getShipsWithFleet(d) + (distance(s.id, d.id)*2));
     	}
         
         public int getShipsWithFleet(Planet p) {
@@ -41,6 +42,43 @@ namespace DTStrike.MyBot
         	}
         	return ships;
     	}
+        
+        public List<Planet> getMyWeakPlanets() {
+        	int average = getAverageIndusPlanetShips();
+        	List<Planet> result = new List<Planet>();
+        	foreach (Planet p in getNotMyIndusPlanets()) {
+        		if(p.numShips <= average) {
+        			result.Add(p);
+        		}
+        	}
+        	return result;
+        }
+        
+        public int getAverageIndusPlanetShips() {
+        	int sum = 0;
+        	int nb = 0;
+        	foreach (Planet p in getNotMyIndusPlanets()) {
+        		sum += p.numShips;
+        		nb++;
+        	}
+        	if(nb == 0) {
+        		return int.MinValue;
+        	}
+        	return sum/nb;
+        }
+        
+        public int getAverageMiliPlanetShips() {
+        	int sum = 0;
+        	int nb = 0;
+        	foreach (Planet p in getNotMyMiliPlanets()) {
+        		sum += p.numShips;
+        		nb++;
+        	}
+        	if(nb == 0) {
+        		return int.MinValue;
+        	}
+        	return sum/nb;
+        }
 
 	    /**
 	     * A player is alive if he owns at least one military planet or one fleet.

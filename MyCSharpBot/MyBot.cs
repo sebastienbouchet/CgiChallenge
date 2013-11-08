@@ -20,43 +20,26 @@ namespace DTStrike.MyBot
 	    // your own.
 	    public static void doTurn(Game game) {
 	
-		    // (1) Choix de la source : la plus forte
-		    /*Planet source = null;
-		    int sourceShips = int.MinValue;
-		    foreach (Planet p in game.getMyMilitaryPlanets()) {
-			    int score = p.numShips;
-			    if (score > sourceShips) {
-				    sourceShips = score;
-				    source = p;
-			    }
-		    }
-
-            if (source == null)
-            {
-                return;
-            }*/
-
-		    //	2	Choix de la cible : la plus faible et la plus proche de la source
-			//	2.1	Soit indus soit mili
 		    Planet dest = null;
 		    Planet source = null;
 		    double destScore = 0;
 		    int destFleetShips = 0;
-		    List<Planet> cibles = game.getNotMyIndusPlanets();
+		    List<Planet> cibles = game.getMyWeakPlanets();
+		    if (cibles.Count == 0) {
+		    	cibles = game.getNotMyIndusPlanets();
+		    }
 		    if ((cibles.Count == 0) || (game.getMyIndusPlanets().Count / game.getMyMilitaryPlanets().Count > 5)) {
 		    	cibles = game.getNotMyMiliPlanets();
 		    }
 		    foreach (Planet p in cibles)
 		    {
 		    	foreach (Planet s in game.getMyMilitaryPlanets()) {
-		    		int fleetShips = game.getShipsWithFleet(p) + 1;
-		    		
-		    		// taille mini de la flotte
-			    	if(fleetShips < 10) {
-			    		fleetShips = 10;
-			    	}
-		    		
-		    		if ((fleetShips < s.numShips / 2) && (s.numShips - fleetShips > 10)) {
+		    		int fleetShips = game.getShipsWithFleet(p) + 10;
+		    		int sourceShips = game.getShipsWithFleet(s);
+		    		int minimumMili = 10; //game.getAverageMiliPlanetShips() + 10;
+		    		//Log.debug("fleetShips=" + fleetShips + " sourceShips=" + sourceShips);
+
+		    		if ((fleetShips > 0) && (fleetShips < sourceShips / 2) && (sourceShips - fleetShips > minimumMili)) {
 		    			
 			    		double score = game.getDestScore(p,s);
 			    		if(score > destScore) {
