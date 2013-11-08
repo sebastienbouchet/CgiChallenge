@@ -24,20 +24,26 @@ namespace DTStrike.MyBot
 		    Planet source = null;
 		    double destScore = 0;
 		    int destFleetShips = 0;
+		    bool ennemy = false;
 		    List<Planet> cibles = game.getMyWeakPlanets();
 		    if (cibles.Count == 0) {
 		    	cibles = game.getNotMyIndusPlanets();
+		    	ennemy = true;
 		    }
 		    if ((cibles.Count == 0) || (game.getMyIndusPlanets().Count / game.getMyMilitaryPlanets().Count > 5)) {
 		    	cibles = game.getNotMyMiliPlanets();
+		    	ennemy = true;
 		    }
 		    foreach (Planet p in cibles)
 		    {
 		    	foreach (Planet s in game.getMyMilitaryPlanets()) {
-		    		int fleetShips = game.getShipsWithFleet(p) + 10;
+		    		int fleetShips = 10;
+		    		if(ennemy) {
+		    			fleetShips += Math.Abs(game.getShipsWithFleet(p));
+		    		}
 		    		int sourceShips = game.getShipsWithFleet(s);
 		    		int minimumMili = 10; //game.getAverageMiliPlanetShips() + 10;
-		    		//Log.debug("fleetShips=" + fleetShips + " sourceShips=" + sourceShips);
+		    		//Log.debug("fleetShips=" + fleetShips + " sourceShips=" + sourceShips + " s=" + s.numShips);
 
 		    		if ((fleetShips > 0) && (fleetShips < sourceShips / 2) && (sourceShips - fleetShips > minimumMili)) {
 		    			

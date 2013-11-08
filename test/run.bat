@@ -49,9 +49,9 @@ REM set bot1="java -cp engine.jar six.challenge.bot.BullyBot"
 REM set bot2="java -cp engine.jar six.challenge.bot.LooterBot"
 REM set bot3="java -cp engine.jar six.challenge.bot.RageBot"
 REM set bot4="java -cp engine.jar six.challenge.bot.RandomBot"
-set bot1="../oldBot/MyCSharpBot_v3.exe"
-set bot2="../oldBot/MyCSharpBot_v2.exe"
-set bot3="../oldBot/MyCSharpBot_v1.exe"
+set bot1="../oldBot/MyCSharpBot_v4.exe"
+set bot2="../oldBot/MyCSharpBot_v3.exe"
+set bot3="../oldBot/MyCSharpBot_v2.exe"
 set bot4="java -cp engine.jar six.challenge.bot.RandomBot"
 
 echo Lancement de la partie a %nb_players% joueurs sur la carte %map%

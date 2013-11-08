@@ -46,7 +46,7 @@ namespace DTStrike.MyBot
         public List<Planet> getMyWeakPlanets() {
         	int average = getAverageIndusPlanetShips();
         	List<Planet> result = new List<Planet>();
-        	foreach (Planet p in getNotMyIndusPlanets()) {
+        	foreach (Planet p in getMyIndusPlanets()) {
         		if(p.numShips <= average) {
         			result.Add(p);
         		}
