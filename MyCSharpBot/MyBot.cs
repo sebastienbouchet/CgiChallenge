@@ -41,11 +41,11 @@ namespace DTStrike.MyBot
 		    		if(ennemy) {
 		    			fleetShips += Math.Abs(game.getShipsWithFleet(p));
 		    		}
-		    		int sourceShips = game.getShipsWithFleet(s);
-		    		int minimumMili = 10; //game.getAverageMiliPlanetShips() + 10;
+		    		int sourceShips = game.getShipsWithFleetAttackOnly(s);
+		    		int minimumMili = 10 + game.getMyPlanets().Count; //game.getAverageMiliPlanetShips() + 10;
 		    		//Log.debug("fleetShips=" + fleetShips + " sourceShips=" + sourceShips + " s=" + s.numShips);
 
-		    		if ((fleetShips > 0) && (fleetShips < sourceShips / 2) && (sourceShips - fleetShips > minimumMili)) {
+		    		if ((fleetShips > 0) && (fleetShips < sourceShips / 2) && (sourceShips - fleetShips > minimumMili) && (s.numShips - fleetShips > minimumMili)) {
 		    			
 			    		double score = game.getDestScore(p,s);
 			    		if(score > destScore) {

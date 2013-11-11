@@ -13,6 +13,7 @@ namespace DTStrike.MyBot
         public List<Planet> planets;
 	    public List<Fleet> fleets;
         public const int MY_ID = 1;
+        private static int turn = 1;
 
 	    public Game(List<String> data) {
 		    planets = new List<Planet>();
@@ -22,10 +23,14 @@ namespace DTStrike.MyBot
 		    }
 	    }
         
+        public int getTurn() {
+        	return turn;
+        }
+        
         public double getDestScore(Planet d, Planet s) {
         	//Log.debug("ships=" + d.numShips + " distance=" + distance(s.id, d.id) + " score=" + (1.0/d.numShips + 1.0/distance(s.id, d.id)));
         	//return 1.0/getShipsWithFleet(d)*10.0 + 1.0/distance(s.id, d.id)/2.0;
-        	return 1.0/(getShipsWithFleet(d) + (distance(s.id, d.id)*2));
+        	return 1.0/(getShipsWithFleet(d) + (distance(s.id, d.id)*10));
     	}
         
         public int getShipsWithFleet(Planet p) {
@@ -43,11 +48,26 @@ namespace DTStrike.MyBot
         	return ships;
     	}
         
+        public int getShipsWithFleetAttackOnly(Planet p) {
+        	int ships = p.numShips == 0 ? 1 : p.numShips;
+        	
+        	foreach (Fleet f in getFleets()) {
+        		if(f.destinationPlanet == p.id) {
+        			if(f.owner == p.owner) {
+        				//ships += f.numShips;
+        			} else {
+        				ships -= f.numShips;
+        			}
+        		}
+        	}
+        	return ships;
+    	}
+        
         public List<Planet> getMyWeakPlanets() {
         	int average = getAverageIndusPlanetShips();
         	List<Planet> result = new List<Planet>();
         	foreach (Planet p in getMyIndusPlanets()) {
-        		if(p.numShips <= average) {
+        		if(p.numShips <= 10) {
         			result.Add(p);
         		}
         	}
@@ -310,6 +330,7 @@ namespace DTStrike.MyBot
 	    public void finishTurn() {
             System.Console.Out.Write("go\n");
             System.Console.Out.Flush();
+            turn++;
 	    }
 
         public List<Planet> playerPlanets(int playerID, Boolean militaryPlanets)
@@ -402,7 +423,7 @@ namespace DTStrike.MyBot
 						    EconomicPlanet p = new EconomicPlanet(planets.Count(),
 								    owner, numShips, economicValue, x, y);
 						    planets.Add(p);
-					    } else if (line[0].Equals("F") || line[0].Equals("R")) {
+				    	} else if (line[0].Equals("F") || line[0].Equals("R")) {
 						    if (line.Length != 7) {
 							    System.Console.Error.WriteLine("error line 2: " + str);
 							    return 1;
